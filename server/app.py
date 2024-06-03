@@ -3,6 +3,7 @@
 from flask import Flask, request, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+import os
 
 from models import db, Course, Review, Lecturer, Student
 
