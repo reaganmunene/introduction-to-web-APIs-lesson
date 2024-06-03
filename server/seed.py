@@ -70,31 +70,24 @@ with app.app_context():
     Lecturer.query.delete()
     Course.query.delete()
 
-    students_list = []
-    for name in students:
-        s = Student(name=name)
-        students_list.append(s)
-
+    students_list = [Student(name=name) for name in students]
     db.session.add_all(students_list)
 
-    lecturers_list = []
-    for name in lecturers:
-        l = Lecturer(name=name)
-        lecturers_list.append(l)
-
+    lecturers_list = [Lecturer(name=name) for name in lecturers]
     db.session.add_all(lecturers_list)
+
+    db.session.commit()
 
     courses = []
     for i in range(100):
         c = Course(
-            title=fake.sentence(),
-            lecturer=rc(lecturers_list),
-            student=rc(students_list),
-            duration=randint(1, 4),
+            title=fake.sentence()
         )
+        c.lecturers.append(rc(lecturers_list))  # Add a lecturer to the course
         courses.append(c)
 
     db.session.add_all(courses)
+    db.session.commit()
 
     reviews = []
     for s in students_list:
@@ -103,9 +96,9 @@ with app.app_context():
                 score=randint(0, 10),
                 comment=fake.sentence(),
                 student=s,
-                course=rc(courses))
+                course=rc(courses)
+            )
             reviews.append(r)
 
     db.session.add_all(reviews)
-
     db.session.commit()
